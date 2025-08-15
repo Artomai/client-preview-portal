@@ -213,118 +213,102 @@
     </div>
 
     <script>
-        // Sample project data - replace with your actual data source
-        const projects = [
-            {
-                id: 'acme-corp',
-                name: 'Acme Corporation',
-                description: 'E-commerce platform with advanced inventory management and customer portal.',
-                status: 'development',
-                lastUpdated: '2 days ago',
-                url: 'https://acme-corp.dev.yourdomain.com',
-                repo: 'https://github.com/yourcompany/acme-corp'
-            },
-            {
-                id: 'techstart',
-                name: 'TechStart Solutions',
-                description: 'SaaS dashboard for project management with real-time collaboration features.',
-                status: 'review',
-                lastUpdated: '1 day ago',
-                url: 'https://techstart.dev.yourdomain.com',
-                repo: 'https://github.com/yourcompany/techstart'
-            },
-            {
-                id: 'greenleaf',
-                name: 'GreenLeaf Consulting',
-                description: 'Corporate website with blog, portfolio showcase, and contact management.',
-                status: 'completed',
-                lastUpdated: '1 week ago',
-                url: 'https://greenleaf.dev.yourdomain.com',
-                repo: 'https://github.com/yourcompany/greenleaf'
-            },
-            {
-                id: 'foodie-app',
-                name: 'Foodie Delivery App',
-                description: 'Mobile-first food delivery application with restaurant management portal.',
-                status: 'development',
-                lastUpdated: '3 hours ago',
-                url: 'https://foodie-app.dev.yourdomain.com',
-                repo: 'https://github.com/yourcompany/foodie-app'
-            }
-        ];
-
-        function getInitials(name) {
-            return name.split(' ').map(word => word[0]).join('').toUpperCase();
-        }
-
-        function getStatusClass(status) {
-            return `status-${status}`;
-        }
-
-        function getStatusLabel(status) {
-            const labels = {
-                development: 'In Development',
-                review: 'Under Review',
-                completed: 'Completed'
-            };
-            return labels[status] || status;
-        }
-
-        function renderProjects(projectsToRender = projects) {
+    // Load projects from JSON file
+    let projects = [];
+    
+    async function loadProjects() {
+        try {
+            const response = await fetch('/clients.json');
+            const data = await response.json();
+            projects = data.projects || [];
+            renderProjects();
+            console.log(`Loaded ${projects.length} projects`);
+        } catch (error) {
+            console.error('Failed to load projects:', error);
+            // Fallback to empty state or show error message
+            projects = [];
             const grid = document.getElementById('projectsGrid');
-            
-            if (projectsToRender.length === 0) {
-                grid.innerHTML = '<p style="text-align: center; color: white; grid-column: 1/-1;">No projects found</p>';
-                return;
-            }
-            
-            grid.innerHTML = projectsToRender.map(project => `
-                <div class="project-card" onclick="window.open('${project.url}', '_blank')">
-                    <div class="project-header">
-                        <div class="project-avatar">${getInitials(project.name)}</div>
-                        <div class="project-info">
-                            <h3>${project.name}</h3>
-                            <div class="status">
-                                <span class="status-badge ${getStatusClass(project.status)}">${getStatusLabel(project.status)}</span>
-                            </div>
+            grid.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; color: white; padding: 2rem;">
+                    <h3>Unable to load projects</h3>
+                    <p>Please check that clients.json exists and is properly formatted.</p>
+                </div>
+            `;
+        }
+    }
+
+    function getInitials(name) {
+        return name.split(' ').map(word => word[0]).join('').toUpperCase();
+    }
+
+    function getStatusClass(status) {
+        return `status-${status}`;
+    }
+
+    function getStatusLabel(status) {
+        const labels = {
+            development: 'In Development',
+            review: 'Under Review',
+            completed: 'Completed'
+        };
+        return labels[status] || status;
+    }
+
+    function renderProjects(projectsToRender = projects) {
+        const grid = document.getElementById('projectsGrid');
+        
+        if (projectsToRender.length === 0) {
+            grid.innerHTML = '<p style="text-align: center; color: white; grid-column: 1/-1;">No projects found</p>';
+            return;
+        }
+        
+        grid.innerHTML = projectsToRender.map(project => `
+            <div class="project-card" onclick="window.open('${project.url}', '_blank')">
+                <div class="project-header">
+                    <div class="project-avatar">${getInitials(project.name)}</div>
+                    <div class="project-info">
+                        <h3>${project.name}</h3>
+                        <div class="status">
+                            <span class="status-badge ${getStatusClass(project.status)}">${getStatusLabel(project.status)}</span>
                         </div>
                     </div>
-                    
-                    <div class="project-description">
-                        ${project.description}
-                    </div>
-                    
-                    <div class="project-meta">
-                        <span>Last updated: ${project.lastUpdated}</span>
-                    </div>
-                    
-                    <div class="project-actions">
-                        <a href="${project.url}" target="_blank" class="btn btn-primary" onclick="event.stopPropagation()">
-                            View Project
-                        </a>
-                        <a href="${project.repo}" target="_blank" class="btn btn-secondary" onclick="event.stopPropagation()">
-                            Repository
-                        </a>
-                    </div>
                 </div>
-            `).join('');
-        }
+                
+                <div class="project-description">
+                    ${project.description}
+                </div>
+                
+                <div class="project-meta">
+                    <span>Last updated: ${project.lastUpdated}</span>
+                </div>
+                
+                <div class="project-actions">
+                    <a href="${project.url}" target="_blank" class="btn btn-primary" onclick="event.stopPropagation()">
+                        View Project
+                    </a>
+                    <a href="${project.repo}" target="_blank" class="btn btn-secondary" onclick="event.stopPropagation()">
+                        Repository
+                    </a>
+                </div>
+            </div>
+        `).join('');
+    }
 
-        function searchProjects() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filteredProjects = projects.filter(project => 
-                project.name.toLowerCase().includes(searchTerm) ||
-                project.description.toLowerCase().includes(searchTerm)
-            );
-            renderProjects(filteredProjects);
-        }
+    function searchProjects() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const filteredProjects = projects.filter(project => 
+            project.name.toLowerCase().includes(searchTerm) ||
+            project.description.toLowerCase().includes(searchTerm)
+        );
+        renderProjects(filteredProjects);
+    }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            renderProjects();
-            
-            document.getElementById('searchInput').addEventListener('input', searchProjects);
-        });
-    </script>
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        loadProjects(); // Load from JSON instead of rendering hardcoded data
+        
+        document.getElementById('searchInput').addEventListener('input', searchProjects);
+    });
+</script>
 </body>
 </html>
