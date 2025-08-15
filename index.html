@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Development Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .search-box {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .search-input {
+            padding: 1rem;
+            border-radius: 50px;
+            border: none;
+            width: 100%;
+            max-width: 400px;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            outline: none;
+        }
+        
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        
+        .project-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .project-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .project-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+        
+        .project-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.25rem;
+            color: #333;
+        }
+        
+        .project-info .status {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .project-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #999;
+            margin-bottom: 1rem;
+        }
+        
+        .project-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #dee2e6;
+        }
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-development {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-review {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .status-completed {
+            background: #e8f5e8;
+            color: #388e3c;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Development Portal</h1>
+            <p>Preview client projects and track development progress</p>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Search projects..." id="searchInput">
+        </div>
+        
+        <div class="projects-grid" id="projectsGrid">
+            <!-- Projects will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Sample project data - replace with your actual data source
+        const projects = [
+            {
+                id: 'acme-corp',
+                name: 'Acme Corporation',
+                description: 'E-commerce platform with advanced inventory management and customer portal.',
+                status: 'development',
+                lastUpdated: '2 days ago',
+                url: 'https://acme-corp.dev.yourdomain.com',
+                repo: 'https://github.com/yourcompany/acme-corp'
+            },
+            {
+                id: 'techstart',
+                name: 'TechStart Solutions',
+                description: 'SaaS dashboard for project management with real-time collaboration features.',
+                status: 'review',
+                lastUpdated: '1 day ago',
+                url: 'https://techstart.dev.yourdomain.com',
+                repo: 'https://github.com/yourcompany/techstart'
+            },
+            {
+                id: 'greenleaf',
+                name: 'GreenLeaf Consulting',
+                description: 'Corporate website with blog, portfolio showcase, and contact management.',
+                status: 'completed',
+                lastUpdated: '1 week ago',
+                url: 'https://greenleaf.dev.yourdomain.com',
+                repo: 'https://github.com/yourcompany/greenleaf'
+            },
+            {
+                id: 'foodie-app',
+                name: 'Foodie Delivery App',
+                description: 'Mobile-first food delivery application with restaurant management portal.',
+                status: 'development',
+                lastUpdated: '3 hours ago',
+                url: 'https://foodie-app.dev.yourdomain.com',
+                repo: 'https://github.com/yourcompany/foodie-app'
+            }
+        ];
+
+        function getInitials(name) {
+            return name.split(' ').map(word => word[0]).join('').toUpperCase();
+        }
+
+        function getStatusClass(status) {
+            return `status-${status}`;
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                development: 'In Development',
+                review: 'Under Review',
+                completed: 'Completed'
+            };
+            return labels[status] || status;
+        }
+
+        function renderProjects(projectsToRender = projects) {
+            const grid = document.getElementById('projectsGrid');
+            
+            if (projectsToRender.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: white; grid-column: 1/-1;">No projects found</p>';
+                return;
+            }
+            
+            grid.innerHTML = projectsToRender.map(project => `
+                <div class="project-card" onclick="window.open('${project.url}', '_blank')">
+                    <div class="project-header">
+                        <div class="project-avatar">${getInitials(project.name)}</div>
+                        <div class="project-info">
+                            <h3>${project.name}</h3>
+                            <div class="status">
+                                <span class="status-badge ${getStatusClass(project.status)}">${getStatusLabel(project.status)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-description">
+                        ${project.description}
+                    </div>
+                    
+                    <div class="project-meta">
+                        <span>Last updated: ${project.lastUpdated}</span>
+                    </div>
+                    
+                    <div class="project-actions">
+                        <a href="${project.url}" target="_blank" class="btn btn-primary" onclick="event.stopPropagation()">
+                            View Project
+                        </a>
+                        <a href="${project.repo}" target="_blank" class="btn btn-secondary" onclick="event.stopPropagation()">
+                            Repository
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function searchProjects() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filteredProjects = projects.filter(project => 
+                project.name.toLowerCase().includes(searchTerm) ||
+                project.description.toLowerCase().includes(searchTerm)
+            );
+            renderProjects(filteredProjects);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProjects();
+            
+            document.getElementById('searchInput').addEventListener('input', searchProjects);
+        });
+    </script>
+</body>
+</html>
