@@ -1,8 +1,18 @@
 {
-  "projects": [],
+  "projects": [
+    {
+      "id": "bidbuilder",
+      "name": "MinMax - BidBuilder",
+      "description": "Webapp preview",
+      "status": "development", 
+      "lastUpdated": "2025-08-15",
+      "url": "https://minmax-bidbuilder.dev.artomai.com",
+      "repo": "https://github.com/Artomai/bidbuilder"
+    }
+  ],
   "meta": {
     "lastUpdated": "2025-08-15",
-    "totalProjects": 0,
-    "version": "1.0.0"
+    "totalProjects": 1,
+    "version": "1.1.0"
   }
 }
